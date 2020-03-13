@@ -1,5 +1,6 @@
 import hashlib
 import requests
+import os
 
 import sys
 
@@ -23,8 +24,14 @@ def proof_of_work(last_proof):
     start = timer()
 
     print("Searching for next proof")
-    proof = 0
+
     #  TODO: Your code here
+    proof = random.randint(-sys.maxsize + 10, 0)
+
+    # Last six characters of hash
+    last_hash = hashlib.sha256(str(last_proof).encode()).hexdigest()[-6:]
+    while valid_proof(last_hash, proof) is False:
+        proof += 1
 
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
@@ -39,8 +46,11 @@ def valid_proof(last_hash, proof):
     IE:  last_hash: ...AE9123456, new hash 123456E88...
     """
 
-    # TODO: Your code here!
-    pass
+    # First six characters of the hash
+    sixChar = hashlib.sha256(str(proof).encode()).hexdigest()[:6]
+
+    # returns true if first six characters of hash equal to previous last six characters.
+    return sixChar == last_hash
 
 
 if __name__ == '__main__':
